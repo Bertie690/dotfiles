@@ -1,0 +1,8 @@
+# Env variables for init.
+export VOLTA_HOME="$HOME/.volta"
+export POSH_CONFIG="$HOME/.config/posh-config.json"
+
+export GH_DASH_CONFIG="$HOME/.config/gh/gh-dash.yaml"
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
