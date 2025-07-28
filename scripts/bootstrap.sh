@@ -16,8 +16,12 @@ CONFIG_DIR=$DOTFILES_ROOT/config              # Config file source directories
 CONFIG_DEST=.$HOME/.config     # Destination for config files
 MAX_DEPTH=2                    # Maximum recursion depth for subdirectories
 
+blue () {
+  printf  "\033[00;34m$1\033[0m"
+}
+
 info () {
-  printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+  printf "\r  [ ${blue ..}] $1\n"
 }
 
 user () {
@@ -111,7 +115,7 @@ link_file () {
 }
 
 symlink_dotfiles () {
-  info "Symlinking dotfiles from $SYMLINK_DIR into $HOME..."
+  info "Symlinking dotfiles from ${blue $SYMLINK_DIR} into ${blue $HOME}..."
 
   local overwrite_all=false backup_all=false skip_all=false
 
@@ -123,7 +127,7 @@ symlink_dotfiles () {
 }
 
 symlink_configs () {
-  info "Symlinking config from $CONFIG_DIR into $CONFIG_DEST..."
+  info "Symlinking config files from ${blue CONFIG_DIR} into ${blue CONFIG_DEST}..."
 
   local overwrite_all=false backup_all=false skip_all=false
 
@@ -132,19 +136,22 @@ symlink_configs () {
 
   for file in $(find -H "$CONFIG_DIR" -maxdepth $MAX_DEPTH)
   do
+    echo $file
     if  [[ $file =~ $regex ]]
     then
-    dst="$CONFIG_DEST"/"${BASH_REMATCH[1]}"
-    link_file "$src" "$dst"
+      dst="$CONFIG_DEST"/"${BASH_REMATCH[1]}"
+      link_file "$src" "$dst"
+    fi
   done
 }
 
 # Install any dependencies listed inside packages
 install_dependencies () {
   info 'Installing packages...'
-  sh -c ./install_deps.sh
+  sh -c $DOTFILES_ROOT/scripts/install_deps.sh
 }
 
 symlink_dotfiles
 symlink_configs
 install_dependencies
+success "DONE"!
