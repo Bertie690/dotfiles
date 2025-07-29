@@ -1,0 +1,2 @@
+# Run bash_profile if it exists
+[ -r ~/.bash_profile ] && [ -f ~/.bash_profile ] && . ~/.bash_profile;

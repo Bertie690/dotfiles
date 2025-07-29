@@ -1,13 +1,11 @@
 # If already initialized, do nothing.
-[ -z "$PROFILE_INITIALIZED" ] && return
+[ -n "$PROFILE_INITIALIZED" ] && return
 
 export PROFILE_INITIALIZED=true
 
 # Load the shell dotfiles, and then some:
-# * ~/.path can be used to extend `$PATH`.
-
-echo "apple"
-
+# * ~/.exports can be used to configure exports from various files
+# * ~/.path can be used to extend `$PATH` (potentially with exported vars).
 for file in ~/.{bashrc,exports,path,prompt}; do
 	[ -r "$file" ] && [ -f "$file" ] && source "$file";
 done;
