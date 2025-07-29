@@ -26,6 +26,6 @@
 [difftool]
 	prompt = false
 [alias]
-  fixup = "commit --amend --no-edit"
+	fixup = "commit --amend --no-edit"
 	get-upstream-remote = "!LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')""
 	squash-all = "! f() { git fetch && git reset --hard \"${1:-$(git get-upstream-remote)}\" && git merge --squash --no-commit HEAD@{1}; }; f"

@@ -1,9 +1,3 @@
-# If already initialized, do nothing.
-[ -z "$PROFILE_INITIALIZED" ] && return
-
-# Run .bash_profile for login shells because i want to
-[ -r "~/.profile" ] && [ -f "~/.profile" ] && source "~/.profile";
-
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -11,7 +5,7 @@ HISTCONTROL=ignoreboth
 # append to the history file, don't overwrite it
 shopt -s histappend
 
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+# Decrease size of history files to save space
 HISTSIZE=100
 HISTFILESIZE=200
 

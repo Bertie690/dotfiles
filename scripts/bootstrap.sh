@@ -1,156 +1,172 @@
 #!/usr/bin/env bash
 #
-# bootstrap creates symlinks to necessary files inside various directories.
+# Bootstrap script to create symlinks to necessary files inside various directories.
 # Sourced from https://github.com/holman/dotfiles/blob/master/script/bootstrap
-# with a bit of tweaking
+# with ~~a bit~~ A LOT of tweaking.
 
+# Crash program if something returns with a non-0 exitcode or if a user-specified glob fails to match anything.
+set -e
+shopt -s failglob
+shopt -s dotglob
+shopt -s globstar
+
+# An associative array/set thing
+declare -A seen_files
+
+# Grab all variables and functions defined in our config files.
+if [[ -r utils.sh && -f utils.sh ]]; then
+ 	source utils.sh
+else
+	printf "\aFile utils.sh was not found during initialization!" >&2;
+	exit 1
+fi
+
+if [[ -r bootstrap.config && -f bootstrap.config ]]; then
+ 	source bootstrap.config
+else
+	printf "\aFile bootstrap.config was not found during initialization!" >&2;
+	exit 1
+fi
+
+# Go to dotfiles root
 cd "$(dirname "$0")/.."
 DOTFILES_ROOT=$(pwd -P)
-set -e
-echo $DOTFILES_ROOT
 
-# Paths to directories
+# A globally selected option applying to the rest of the current links ("skip all", etc).
+globalAction=''
 
-SYMLINK_DIR=$DOTFILES_ROOT/links              # Will be linked straight into home dir
-CONFIG_DIR=$DOTFILES_ROOT/config              # Config file source directories
-CONFIG_DEST=$HOME/.config                    # Destination for config files
-MAX_DEPTH=2                                   # Maximum recursion depth for subdirectories
-
-blue () {
-  printf "\033[00;34m$1\033[0m"
+# Iterate and symlink all files and folders in $sources_to_targets.
+run () {
+	for src_path in "${sources_order[@]}"; do
+        dst_path=~/${sources_to_targets[$src_path]}
+        # Trim trailing slashes to make the error messages nicer
+		dst_path=${dst_path%/}
+		src_path=$DOTFILES_ROOT/$src_path
+		recurse_links
+	done
 }
 
-red () {
-  printf "\e[31m$1\e[0m"
-}
+# Recursively link the contents of $src_path to $dst_path.
+recurse_links () {
+    info "Symlinking all files from $(orange "$src_path") into $(blue "$dst_path")..."
 
-info () {
-  printf "[$(blue ...)] $1\n"
-}
-
-success () {
-  printf "\033[2K[ \033[00;32mOK\033[0m ] $1\n"
-}
-
-fail () {
-  printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n"
-  echo ''
-  exit
-}
-
-link_file () {
-  local src=$1 dst=$2
-
-  local overwrite= backup= skip=
-  local action=
-
-  if [ -f "$dst" -o -d "$dst" -o -L "$dst" ]
-  then
-
-    if [ "$overwrite_all" == "false" ] && [ "$backup_all" == "false" ] && [ "$skip_all" == "false" ]
-    then
-
-      # Skip files that are already linked
-      if [ "$(readlink $dst)" == "$src" ]
-      then
-        info "Skipping $(blue $src); already linked to target"
-        skip=skipped;
-      else
-
-        user "File already exists: $(red $dst) ($(basename "$(blue $src)")) - please select a response.\n\
-        [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all?"
-        read -n 1 action
-
-        case "$action" in
-          o )
-            overwrite=true;;
-          O )
-            overwrite_all=true;;
-          b )
-            backup=true;;
-          B )
-            backup_all=true;;
-          s )
-            skip=true;;
-          S )
-            skip_all=true;;
-          * )
-            ;;
-        esac
-
-      fi
-
+    dst_path=${dst_path}
+    # If src_path is not a glob, link it directly to dst_path and call it a day.
+    if [[ ! "$src_path" =~ .*/\*\*? ]]; then
+        link_files "$src_path" "$dst_path"
+        return
     fi
 
-    # Use global overrides if provided (or else individual overrides)
-    overwrite=${overwrite:-$overwrite_all}
-    backup=${backup:-$backup_all}
-    skip=${skip:-$skip_all}
-
-    if [ "$overwrite" == "true" ]
-    then
-      rm -rf "$dst"
-      success "Removed $(red $dst)."
-    fi
-
-    if [ "$backup" == "true" ]
-    then
-      mv "$dst" "${dst}.backup"
-      success "Moved $(red $dst) to ${dst}.backup."
-    fi
-
-    if [ "$skip" == "true" ]
-    then
-      success "Skipped linking $(blue $src)."
-    fi
-  fi
-
-  if [ "$skip" != "true" -a "$skip" != "skipped" ]  # "false" or empty
-  then
-    ln -s "$src" "$dst"
-    success "Symlinked $src to $dst!"
-  fi
+    for source in $src_path; do
+        # src_path is a glob, so only match files.
+        if [[ -f "$source" ]]; then
+            dest="$dst_path"/"$(basename "$source")"
+            link_files "$source" "$dest"
+        fi
+    done
 }
 
-symlink_dotfiles () {
-  info "Symlinking dotfiles from $(blue $SYMLINK_DIR) into $(blue $HOME)..."
+# Wrapper function to create a link from $1 to $2.
+link_files () {
+    # The current file/folder that is being linked.
+    local src=$1
+	# The target location for the link.
+    local dst=$2
 
-  local overwrite_all=false backup_all=false skip_all=false
+    # Skip previously seen files
+    if [[ -v seen_files[$src] ]]; then
+        return;
+    fi
 
-  for src in $(find -H "$SYMLINK_DIR" -maxdepth $MAX_DEPTH -type f)
-  do
-    dst="$HOME/$(basename "$src")"
-    link_file "$src" "$dst"
-  done
+    seen_files[$src]="1"
+
+    # The selected action to take when linking over an existing file.
+    # Valid options:
+    # "skip": Skips linking file
+    # "overwrite": Overwrites file contents
+    # "backup": Creates backup of previous file contents
+    local action=''
+
+    # Skip files that are already linked
+    if [ "$(readlink "$dst")" == "$src" ]; then
+        success "$(orange "$src") already linked to $(blue "$dst"), skipping..."
+        return;
+    fi
+
+    # Check if the destination already exists, linking the file immediately if not found.
+    if [[ ! -f "$dst" && ! -d "$dst" && ! -L "$dst" ]]; then
+		ln -s "$src" "$dst"
+	    success "Symlinked $src to $dst!"
+		return;
+	fi
+
+	# If no prior global action has been specified, prompt the user for what to do.
+	if [ -z "$globalAction" ]; then
+		prompt_user
+	fi
+
+	# Finally, make the link as applicable.
+	action=${action:-globalAction}
+	do_action
 }
 
-symlink_configs () {
-  info "\nSymlinking config files from $(blue $CONFIG_DIR) into $(blue $CONFIG_DEST)...\n"
+# Helper function to prompt the user for a course of action when linking over already existing files.
+prompt_user () {
+	# Repeatedly prompt until valid answer is given
+	while [[ -z "$action" && -z "$globalAction" ]]; do
+		user "File already exists: $(blue "$dst")!
+Options:
+[s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all, [q/Q]uit"
+		read -r action
+        echo '' # Add a newline
 
-  local overwrite_all=false backup_all=false skip_all=false
+		case "$action" in
+			o | overwrite )
+				action=overwrite;;
+			O | "overwrite all" | overwrite-all )
+				globalAction=overwrite;;
+			b | backup )
+				action=backup;;
+			B | "backup all" | backup-all )
+				globalAction=backup;;
+			s | skip )
+				action=skip;;
+			S | "Skip all" | "skip-all" )
+				globalAction=skip;;
+			q | Q | "quit" | "Quit" )
+				quit "Quitting process...";;
+			* )
+				error "Invalid option specified!"
+				action=""
+				;;
+		esac
+	done
+}
 
-  # regex to extract the path after the config dir and directly link
-  local regex="$CONFIG_DIR/(.*)"
-
-  for src in $(find -H "$CONFIG_DIR" -maxdepth $MAX_DEPTH -type f)
-  do
-    if [[ $src =~ $regex ]]
-    then
-      dst="$CONFIG_DEST"/"${BASH_REMATCH[1]}"
-      link_file "$src" "$dst"
-    fi
-  done
-
-  unset $overwrite_all $backup_all $skip_all
+# Execute the selected option.
+do_action () {
+	case $action in
+		"skip" )
+			success "Skipped linking $(orange "$src") to $(blue "$dst")."
+			return ;;
+		"overwrite" )
+			rm -rf "$dst"
+			ln -sf "$src" "$dst"
+			success "Forcibly linked $(orange "$src") to $(blue "$dst")!";;
+		"backup" )
+			mv "$dst" "$dst".backup
+			ln -s "$src" "$dst"
+		    success "Backed up $(blue "$dst") to $(green "$dst".backup) and linked successfully!";;
+		*) ;;
+	esac
 }
 
 # Install any dependencies listed inside packages
 install_dependencies () {
-  info 'Installing packages...'
-  sh -c $DOTFILES_ROOT/scripts/install_deps.sh
+    info 'Installing packages...'
+    source "$DOTFILES_ROOT/scripts/install_deps.sh"
 }
 
-symlink_dotfiles
-symlink_configs
+run
 install_dependencies
-success "DONE"!
+success "DONE!"
