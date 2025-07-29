@@ -1,3 +1,9 @@
+# If already initialized, do nothing.
+[ -z "$PROFILE_INITIALIZED" ] && return
+
+# Run .bash_profile for login shells because i want to
+[ -r "~/.profile" ] && [ -f "~/.profile" ] && source "~/.profile";
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth
@@ -15,7 +21,7 @@ shopt -s checkwinsize
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
-#shopt -s globstar
+shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -90,3 +96,7 @@ if ! shopt -oq posix; then
         . /etc/bash_completion
     fi
 fi
+
+## Custom stuff
+# Turn on extended globbing to make my life less bad
+shopt -s extglob
