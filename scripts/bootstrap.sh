@@ -10,27 +10,27 @@ shopt -s failglob
 shopt -s dotglob
 shopt -s globstar
 
+# Go to dotfiles root
+cd "$(dirname "$0")/.."
+DOTFILES_ROOT=$(pwd -P)
+
 # An associative array/set thing
 declare -A seen_files
 
 # Grab all variables and functions defined in our config files.
-if [[ -r utils.sh && -f utils.sh ]]; then
- 	source utils.sh
+if [[ -r scripts/utils.sh && -f scripts/utils.sh ]]; then
+ 	source scripts/utils.sh
 else
-	printf "\aFile utils.sh was not found during initialization!" >&2;
+	printf "\aFile utils.sh was not found during initialization!\n" >&2;
 	exit 1
 fi
 
-if [[ -r bootstrap.config && -f bootstrap.config ]]; then
- 	source bootstrap.config
+if [[ -r scripts/bootstrap.config && -f scripts/bootstrap.config ]]; then
+ 	source scripts/bootstrap.config
 else
-	printf "\aFile bootstrap.config was not found during initialization!" >&2;
+	printf "\aFile bootstrap.config was not found during initialization!\n" >&2;
 	exit 1
 fi
-
-# Go to dotfiles root
-cd "$(dirname "$0")/.."
-DOTFILES_ROOT=$(pwd -P)
 
 # A globally selected option applying to the rest of the current links ("skip all", etc).
 globalAction=''
@@ -50,7 +50,6 @@ run () {
 recurse_links () {
     info "Symlinking all files from $(orange "$src_path") into $(blue "$dst_path")..."
 
-    dst_path=${dst_path}
     # If src_path is not a glob, link it directly to dst_path and call it a day.
     if [[ ! "$src_path" =~ .*/\*\*? ]]; then
         link_files "$src_path" "$dst_path"
@@ -96,7 +95,7 @@ link_files () {
     # Check if the destination already exists, linking the file immediately if not found.
     if [[ ! -f "$dst" && ! -d "$dst" && ! -L "$dst" ]]; then
 		ln -s "$src" "$dst"
-	    success "Symlinked $src to $dst!"
+	    success "Symlinked $(orange "$src") to $(blue "$dst")!"
 		return;
 	fi
 

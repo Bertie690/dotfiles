@@ -1,3 +1,11 @@
+# Initialize .bash_profile if running through VS Code.
+# Currently necessary because VS Code doesn't run .bash_profile when opening an
+# intergrated terminal through WSL.
+[[ "$TERM_PROGRAM" == "vscode" && -r ~/.bash_profile && -f ~/.bash_profile ]] && source ~/.bash_profile;
+
+# Initialize prompts file if it exists
+[ -r ~/.prompt ] && [ -f ~/.prompt ] && source ~/.prompt;
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth

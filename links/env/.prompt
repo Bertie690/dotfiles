@@ -1,4 +1,4 @@
 # Setup oh-my-posh and other stuff
-eval "$(oh-my-posh init bash --config $POSH_CONFIG)"
+eval "$(oh-my-posh init bash --config "$POSH_CONFIG")"
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path bash)"
