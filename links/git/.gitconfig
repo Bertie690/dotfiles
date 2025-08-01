@@ -4,14 +4,16 @@
 
 [pull]
 	rebase = true
+[fetch]
+	all = true
+[user]
+	name = Bertie690
+	email = taylormw163@gmail.com
 [filter "lfs"]
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
-[user]
-	name = Bertie690
-	email = taylormw163@gmail.com
 [core]
 	editor = code --wait --reuse-window
 	autocrlf = input
@@ -26,6 +28,7 @@
 [difftool]
 	prompt = false
 [alias]
-	fixup = "commit --amend --no-edit"
-	get-upstream-remote = "!LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')""
-	squash-all = "! f() { git fetch && git reset --hard \"${1:-$(git get-upstream-remote)}\" && git merge --squash --no-commit HEAD@{1}; }; f"
+	fp = push --force
+	fixup = commit --amend --no-edit
+	get-upstream-remote = !LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
+	squash-all = ! git fetch --all && git reset --hard "${1:-$(git get-upstream-remote)}" && git merge --squash --no-commit HEAD@{1}

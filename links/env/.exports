@@ -1,4 +1,4 @@
-# Env variables for init.
+# Env variables for init
 export VOLTA_HOME="$HOME/.volta"
 export POSH_CONFIG="$HOME/.config/posh-config.json"
 

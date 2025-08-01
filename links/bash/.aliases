@@ -1,2 +1,0 @@
-# Custom aliases!
-alias gm='git merge $(git get-upstream-remote)'
