@@ -1,1 +1,2 @@
-export PATH"=$GOROOT/bin:$GOPATH/bin:$VOLTA_HOME/bin:$PNPM_HOME:$PATH"
+# Custom PATH extensions
+export PATH="$GOROOT/bin:$GOPATH/bin:$VOLTA_HOME/bin:$PNPM_HOME:$PATH"
