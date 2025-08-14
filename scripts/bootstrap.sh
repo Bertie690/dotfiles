@@ -11,7 +11,7 @@ shopt -s dotglob
 shopt -s globstar
 
 # Go to dotfiles root
-cd "$(dirname "$0")/.."
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
 DOTFILES_ROOT=$(pwd -P)
 
 # An associative array/set thing
@@ -22,14 +22,14 @@ if [[ -r scripts/utils.sh && -f scripts/utils.sh ]]; then
  	source scripts/utils.sh
 else
 	printf "\aFile utils.sh was not found during initialization!\n" >&2;
-	exit 1
+	return 1
 fi
 
 if [[ -r scripts/bootstrap.config && -f scripts/bootstrap.config ]]; then
  	source scripts/bootstrap.config
 else
 	printf "\aFile bootstrap.config was not found during initialization!\n" >&2;
-	exit 1
+	return 1
 fi
 
 # A globally selected option applying to the rest of the current links ("skip all", etc).
