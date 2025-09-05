@@ -27,9 +27,21 @@
 	cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
 [difftool]
 	prompt = false
+[stash]
+	showIncludeUntracked = true
+[rerere]
+	enabled = false
 [alias]
 	fp = push --force
 	fixup = commit --amend --no-edit
 	undo = reset HEAD~1
+	# Stage all hunks matching the provided regex.
+	addgrep = "! REGEX=$1 shift && git diff -U1 -I -G\"$REGEX\" \
+		| grepdiff --output-matching=hunk -E \"$REGEX\" \
+		| git apply --cached"
+	# Unstage hunks matching the provided regex.
+	rmgrep = "! REGEX=$1 shift && git diff -R -U1 -I -G\"$REGEX\" \
+		| grepdiff --output-matching=hunk -E \"$REGEX\" \
+		| git apply --cached --reverse"
 	get-upstream-remote = !LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
 	squash-all = ! git fetch --all && git reset --hard "${1:-$(git get-upstream-remote)}" && git merge --squash --no-commit HEAD@{1}

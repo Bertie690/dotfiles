@@ -2,3 +2,5 @@
 eval "$(oh-my-posh init bash --config "$POSH_CONFIG")"
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path bash)"
+
+eval "$(gh completion -s bash)"
