@@ -29,6 +29,7 @@
 	prompt = false
 [stash]
 	showIncludeUntracked = true
+	showPatch = true
 [rerere]
 	enabled = false
 [alias]
@@ -39,8 +40,8 @@
 	addgrep = "! REGEX=$1 shift && git diff -U1 -I -G\"$REGEX\" \
 		| grepdiff --output-matching=hunk -E \"$REGEX\" \
 		| git apply --cached"
-	# Unstage hunks matching the provided regex.
-	rmgrep = "! REGEX=$1 shift && git diff -R -U1 -I -G\"$REGEX\" \
+	# Unstage all hunks matching the provided regex.
+	rmgrep = "! REGEX=$1 shift && git diff --cached -I -G\"$REGEX\" \
 		| grepdiff --output-matching=hunk -E \"$REGEX\" \
 		| git apply --cached --reverse"
 	get-upstream-remote = !LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
