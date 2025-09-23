@@ -1,0 +1,80 @@
+#! /usr/bin/env sh
+
+# File containing shell scripts used by `.gitconfig`.
+# Must be run in `sh` as that is the shell Git uses to execute things
+# Notes: Setting the file to "executable" is recommended.
+
+## Helpers
+
+# Make text orange.
+orange () {
+    printf "\e[33m%s\e[0m" "$1"
+}
+
+# Make text red.
+red () {
+    printf "\e[31m%s\e[0m" "$1"
+}
+
+# Make text green.
+green () {
+    printf "\e[32m%s\e[0m" "$1"
+}
+
+# Make text blue.
+blue () {
+    printf "\e[34m%s\e[0m" "$1"
+}
+
+# Annotate text with a blue [...].
+info () {
+    printf "[$(blue ...)] %s\n" "$1"
+}
+
+# Annotate text with a green [✔].
+success () {
+    printf "[$(green '✔ ')] %s\n" "$1"
+}
+
+# Annotate text with a red [✗].
+error () {
+	printf "[ $(red '✗') ] %s\n" "$1"
+}
+
+## Functions
+
+# Used for the link-ignored git command.
+link_ignored() {
+	main_worktree="$(git main-worktree)"
+	curr_worktree="$(git rev-parse --path-format=absolute --show-toplevel)"
+	if [ "$#" != 1 ]; then
+		echo "Expected 1 argument, but got $#."
+		return 1
+	fi
+	if [ "$curr_worktree" = "$main_worktree" ]; then
+		echo "Already in main worktree: $main_worktree"
+		return 1
+	fi
+
+	(cd "$main_worktree" && git show-ignored "$1") | \
+	while IFS= read -r l; do
+		src="$curr_worktree/$l"
+		dst="$main_worktree/$l"
+	    # Skip files that are already linked
+		if [ "$(readlink "$src")" = "$dst" ]; then
+			info "$(orange "$src") already linked to $(blue "$dst"), skipping..."
+			continue;
+		fi
+	    # Make sure file exists
+		if [ ! -f "$dst" ] && [ ! -d "$dst" ] && [ ! -L "$dst" ]; then
+			ln -s "$src" "$dst"
+			success "Symlinked $(orange "$src") to $(blue "$dst")!"
+			return
+		fi
+		error "Could not symlink $(orange "$src") to $(blue "$dst"); file exists!"
+	done
+}
+
+COMMAND="$1"
+shift
+$COMMAND "$@"
