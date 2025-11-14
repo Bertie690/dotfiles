@@ -16,7 +16,7 @@
     process = git-lfs filter-process
     required = true
     clean = git-lfs clean -- %f
-# Custom filter to allow converting tabs to spaces (used when committing changes to global .gitconfig)
+# Custom filter to convert tabs to spaces (used when committing changes to global .gitconfig)
 [filter "spacify"]
     clean = expand --tabs=4 --initial
 [core]

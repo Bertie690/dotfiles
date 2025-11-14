@@ -14,22 +14,21 @@ shopt -s globstar
 cd "$(dirname "${BASH_SOURCE[0]}")/.."
 DOTFILES_ROOT=$(pwd -P)
 
-# An associative array/set thing
+# An associative array holding all files we've already seen, used to prevent duplicate symlinks.
 declare -A seen_files
 
 # Grab all variables and functions defined in our config files.
 if [[ -r scripts/utils.sh && -f scripts/utils.sh ]]; then
     source scripts/utils.sh
 else
-    printf "\aFile utils.sh was not found during initialization!\n" >&2;
-    return 1
+    printf "File utils.sh was not found during initialization!\n" >&2;
+    exit 1
 fi
 
-if [[ -r scripts/bootstrap.config && -f scripts/bootstrap.config ]]; then
-     source scripts/bootstrap_config.sh
+if [[ -r scripts/bootstrap_config.sh && -f scripts/bootstrap_config.sh ]]; then
+    source scripts/bootstrap_config.sh
 else
-    printf "\aFile bootstrap_config.sh was not found during initialization!\n" >&2;
-    return 1
+    quit "File bootstrap_config.sh was not found during initialization!";
 fi
 
 # A globally selected option applying to the rest of the current links ("skip all", etc).
