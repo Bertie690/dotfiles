@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#
+
 # Bootstrap script to create symlinks to necessary files inside various directories.
 # Sourced from https://github.com/holman/dotfiles/blob/master/script/bootstrap
 # with ~~a bit~~ A LOT of tweaking.
@@ -19,17 +19,17 @@ declare -A seen_files
 
 # Grab all variables and functions defined in our config files.
 if [[ -r scripts/utils.sh && -f scripts/utils.sh ]]; then
- 	source scripts/utils.sh
+    source scripts/utils.sh
 else
-	printf "\aFile utils.sh was not found during initialization!\n" >&2;
-	return 1
+    printf "\aFile utils.sh was not found during initialization!\n" >&2;
+    return 1
 fi
 
 if [[ -r scripts/bootstrap.config && -f scripts/bootstrap.config ]]; then
- 	source scripts/bootstrap.config
+     source scripts/bootstrap_config.sh
 else
-	printf "\aFile bootstrap.config was not found during initialization!\n" >&2;
-	return 1
+    printf "\aFile bootstrap_config.sh was not found during initialization!\n" >&2;
+    return 1
 fi
 
 # A globally selected option applying to the rest of the current links ("skip all", etc).
@@ -37,13 +37,13 @@ globalAction=''
 
 # Iterate and symlink all files and folders in $sources_to_targets.
 run () {
-	for src_path in "${sources_order[@]}"; do
+    for src_path in "${sources_order[@]}"; do
         dst_path=~/${sources_to_targets[$src_path]}
         # Trim trailing slashes to make the error messages nicer
-		dst_path=${dst_path%/}
-		src_path=$DOTFILES_ROOT/$src_path
-		recurse_links
-	done
+        dst_path=${dst_path%/}
+        src_path=$DOTFILES_ROOT/$src_path
+        recurse_links
+    done
 }
 
 # Recursively link the contents of $src_path to $dst_path.
@@ -69,7 +69,7 @@ recurse_links () {
 link_files () {
     # The current file/folder that is being linked.
     local src=$1
-	# The target location for the link.
+    # The target location for the link.
     local dst=$2
 
     # Skip previously seen files
@@ -94,78 +94,71 @@ link_files () {
 
     # Check if the destination already exists, linking the file immediately if not found.
     if [[ ! -f "$dst" && ! -d "$dst" && ! -L "$dst" ]]; then
-		ln -s "$src" "$dst"
-	    success "Symlinked $(orange "$src") to $(blue "$dst")!"
-		return;
-	fi
+        ln -s "$src" "$dst"
+        success "Symlinked $(orange "$src") to $(blue "$dst")!"
+        return;
+    fi
 
-	# If no prior global action has been specified, prompt the user for what to do.
-	if [ -z "$globalAction" ]; then
-		prompt_user
-	fi
+    # If no prior global action has been specified, prompt the user for what to do.
+    if [ -z "$globalAction" ]; then
+        prompt_user
+    fi
 
-	# Finally, make the link as applicable.
-	action=${action:-globalAction}
-	do_action
+    # Finally, make the link as applicable.
+    action=${action:-globalAction}
+    do_action
 }
 
 # Helper function to prompt the user for a course of action when linking over already existing files.
 prompt_user () {
-	# Repeatedly prompt until valid answer is given
-	while [[ -z "$action" && -z "$globalAction" ]]; do
-		user "File already exists: $(blue "$dst")!
+    # Repeatedly prompt until valid answer is given
+    while [[ -z "$action" && -z "$globalAction" ]]; do
+        user "File already exists: $(blue "$dst")!
 Options:
 [s]kip, [S]kip all, [o]verwrite, [O]verwrite all, [b]ackup, [B]ackup all, [q/Q]uit"
-		read -r action
+        read -r action
         echo '' # Add a newline
 
-		case "$action" in
-			o | overwrite )
-				action=overwrite;;
-			O | "overwrite all" | overwrite-all )
-				globalAction=overwrite;;
-			b | backup )
-				action=backup;;
-			B | "backup all" | backup-all )
-				globalAction=backup;;
-			s | skip )
-				action=skip;;
-			S | "Skip all" | "skip-all" )
-				globalAction=skip;;
-			q | Q | "quit" | "Quit" )
-				quit "Quitting process...";;
-			* )
-				error "Invalid option specified!"
-				action=""
-				;;
-		esac
-	done
+        case "$action" in
+            o | overwrite )
+                action=overwrite;;
+            O | "overwrite all" | overwrite-all )
+                globalAction=overwrite;;
+            b | backup )
+                action=backup;;
+            B | "backup all" | backup-all )
+                globalAction=backup;;
+            s | skip )
+                action=skip;;
+            S | "Skip all" | "skip-all" )
+                globalAction=skip;;
+            q | Q | "quit" | "Quit" )
+                quit "Quitting process...";;
+            * )
+                error "Invalid option specified!"
+                action=""
+                ;;
+        esac
+    done
 }
 
 # Execute the selected option.
 do_action () {
-	case $action in
-		"skip" )
-			success "Skipped linking $(orange "$src") to $(blue "$dst")."
-			return ;;
-		"overwrite" )
-			rm -rf "$dst"
-			ln -sf "$src" "$dst"
-			success "Forcibly linked $(orange "$src") to $(blue "$dst")!";;
-		"backup" )
-			mv "$dst" "$dst".backup
-			ln -s "$src" "$dst"
-		    success "Backed up $(blue "$dst") to $(green "$dst".backup) and linked successfully!";;
-		*) ;;
-	esac
-}
-
-# Install any dependencies listed inside packages
-install_dependencies () {
-    info 'Installing packages...'
-    source "$DOTFILES_ROOT/scripts/install_deps.sh"
+    case $action in
+        "skip" )
+            success "Skipped linking $(orange "$src") to $(blue "$dst")."
+            return ;;
+        "overwrite" )
+            rm -rf "$dst"
+            ln -sf "$src" "$dst"
+            success "Forcibly linked $(orange "$src") to $(blue "$dst")!";;
+        "backup" )
+            mv "$dst" "$dst".backup
+            ln -s "$src" "$dst"
+            success "Backed up $(blue "$dst") to $(green "$dst".backup) and linked successfully!";;
+        *) ;;
+    esac
 }
 
 run
-install_dependencies
 success "DONE!"

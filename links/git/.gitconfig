@@ -1,66 +1,69 @@
 # Include local gitconfig if it exists
 [include]
-	path = ~/.local.gitconfig
+    path = ~/.local.gitconfig
 
-[pull]
-	rebase = false
-[fetch]
-	all = true
 [user]
-	name = Bertie690
-	email = taylormw163@gmail.com
-[filter "lfs"]
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
-	clean = git-lfs clean -- %f
-[core]
-	editor = code --wait --reuse-window
-	autocrlf = false
-	eol = lf
-[diff]
-	tool = vscode
-[difftool "vscode"]
-	cmd = code --wait --diff $LOCAL $REMOTE
-[merge]
-	tool = code
-[mergetool "vscode"]
-	cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
-[difftool]
-	prompt = false
-[stash]
-	showIncludeUntracked = true
-	showPatch = true
-[rerere]
-	enabled = false
-[alias]
-	# Shorthand aliases
-	fp = push --force
-	fixup = commit --amend --no-edit
-	undo = "! git reset HEAD~${1:-1}; #"
-
-	# Stage all hunks matching the provided regex.
-	addgrep = "! REGEX=$1 shift && git diff -U1 -I -G\"$REGEX\" \
-		| grepdiff --output-matching=hunk -E \"$REGEX\" \
-		| git apply --cached"
-	# Unstage all hunks matching the provided regex.
-	rmgrep = "! REGEX=$1 shift && git diff --cached -I -G\"$REGEX\" \
-		| grepdiff --output-matching=hunk -E \"$REGEX\" \
-		| git apply --cached --reverse"
-
-	# Get the name of the upstream remote.
-	get-upstream-remote = !LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
-	# Squash all changes on yaour branch onto the provided HEAD (defaults to upstream branch)
-	squash-all = "! git fetch --all && git reset --hard \"${1:-$(git get-upstream-remote)}\" && git merge --squash --no-commit HEAD@{1}; #"
-
-	# Get the path to the main worktree.
-	main-worktree = "! dirname \"$(git rev-parse --path-format=absolute --git-common-dir)\""
-
-	# Symlink all ignored files in the given folder with the versions from the main worktree.
-	# Intended for use to copy config files when creating a new `git` worktree.
-	link-ignored = "! ~/.gitscripts link_ignored"
-
-	# Get all ignored files in the given folder.
-	show-ignored = "ls-files --full-name -o --ignored --exclude-standard --"
+    name = Bertie690
+    email = taylormw163@gmail.com
+[pull]
+    rebase = false
+[fetch]
+    all = true
 [branch]
-	autoSetupMerge = simple
+    autoSetupMerge = simple
+[filter "lfs"]
+    smudge = git-lfs smudge -- %f
+    process = git-lfs filter-process
+    required = true
+    clean = git-lfs clean -- %f
+# Custom filter to allow converting tabs to spaces (used when committing changes to global .gitconfig)
+[filter "spacify"]
+    clean = expand --tabs=4 --initial
+[core]
+    editor = code --wait --reuse-window
+    autocrlf = false
+    eol = lf
+[diff]
+    tool = vscode
+[difftool "vscode"]
+    cmd = code --wait --diff $LOCAL $REMOTE
+[merge]
+    tool = code
+[mergetool "vscode"]
+    cmd = code --wait --merge $REMOTE $LOCAL $BASE $MERGED
+[difftool]
+    prompt = false
+[stash]
+    showIncludeUntracked = true
+    showPatch = true
+[rerere]
+    enabled = false
+[alias]
+    # Shorthand aliases
+    fp = push --force
+    fixup = commit --amend --no-edit
+    undo = "! git reset HEAD~${1:-1}; #"
+
+    # Stage all hunks matching the provided regex.
+    addgrep = "! REGEX=$1 shift && git diff -U1 -I -G\"$REGEX\" \
+        | grepdiff --output-matching=hunk -E \"$REGEX\" \
+        | git apply --cached"
+    # Unstage all hunks matching the provided regex.
+    rmgrep = "! REGEX=$1 shift && git diff --cached -I -G\"$REGEX\" \
+        | grepdiff --output-matching=hunk -E \"$REGEX\" \
+        | git apply --cached --reverse"
+
+    # Get the name of the upstream remote.
+    get-upstream-remote = !LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
+    # Squash all changes on yaour branch onto the provided HEAD (defaults to upstream branch)
+    squash-all = "! git fetch --all && git reset --hard \"${1:-$(git get-upstream-remote)}\" && git merge --squash --no-commit HEAD@{1}; #"
+
+    # Get the path to the main worktree.
+    main-worktree = "! dirname \"$(git rev-parse --path-format=absolute --git-common-dir)\""
+
+    # Symlink all ignored files in the given folder with the versions from the main worktree.
+    # Intended for use to copy config files when creating a new `git` worktree.
+    link-ignored = "! ~/.gitscripts link_ignored"
+
+    # Get all ignored files in the given folder.
+    show-ignored = "ls-files --full-name -o --ignored --exclude-standard --"

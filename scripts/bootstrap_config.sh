@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Config file for vars for the boostrap script.
 
 # Associative array containing globs linking source folders to their corresponding target folders.
@@ -17,5 +18,7 @@ declare -A sources_to_targets=(
 
 # Array containing keys of sources_to_targets, sorted in reverse alphabetical order.
 declare -a sources_order
+# shellcheck disable=SC2034
+# (we use this in bootstrap.sh)
 readarray -t sources_order <<< "$(printf "%s\n" "${!sources_to_targets[@]}" | \
     sort --stable --reverse)"

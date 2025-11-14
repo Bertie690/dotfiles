@@ -1,3 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 * -crlf
+
+# convert tabs to spaces when committing global gitconfig
+*.gitconfig filter=spacify
