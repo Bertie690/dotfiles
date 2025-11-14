@@ -1,0 +1,173 @@
+// Zed keymap
+//
+// For information on binding keys, see the Zed
+// documentation: https://zed.dev/docs/key-bindings
+//
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    "bindings": {
+      "ctrl-shift-p": null,
+      "ctrl-p": "command_palette::Toggle",
+      "ctrl-t": "file_finder::Toggle",
+      "ctrl-tab": "pane::ActivateNextItem",
+      "ctrl-shift-tab": "pane::ActivatePreviousItem",
+      "ctrl-shift-,": "zed::OpenSettingsFile",
+      "ctrl-shift-/": "zed::OpenKeymap",
+      "ctrl-alt-/": "zed::OpenKeymapFile",
+
+      "ctrl-`": "terminal_panel::Toggle",
+
+      "ctrl-shift-t": "pane::ReopenClosedItem",
+      "ctrl-alt-t": "file_finder::Toggle",
+      "ctrl-shift-o": "workspace::Open",
+      "ctrl-o": "workspace::OpenFiles",
+      "ctrl-k ctrl-shift-o": [
+        "projects::OpenFolderInWsl",
+        {
+          "create_new_window": false
+        }
+      ],
+
+      "ctrl-shift-up": [
+        "action::Sequence",
+        ["editor::SelectLeft", "editor::SelectToBeginningOfLine"]
+      ],
+      "ctrl-shift-down": [
+        "action::Sequence",
+        ["editor::SelectRight", "editor::SelectToEndOfLine"]
+      ],
+      "ctrl-alt-n": "editor::JoinLines",
+
+      "ctrl-f": "buffer_search::Deploy",
+      "ctrl-shift-f": "project_search::ToggleFocus",
+      "ctrl-shift-alt-r": "workspace::Reload",
+
+      "ctrl-f11": null,
+      "shift-f11": null,
+      "f7": null,
+      "f5": null,
+      // "f4": null,
+      "f6": null,
+      "ctrl-shift-f5": null,
+
+      "ctrl-shift-c": "git::CheckoutBranch",
+      "ctrl-shift-g s": "git::ViewStash",
+      // TODO: This doesn't work in terminal
+      "shift-alt-c": "workspace::CopyRelativePath",
+      "ctrl-q": "outline::Toggle",
+      "ctrl-shift--": [
+        "zed::DecreaseBufferFontSize",
+        {
+          "persist": false
+        }
+      ],
+      "ctrl--": [
+        "zed::DecreaseBufferFontSize",
+        {
+          "persist": true
+        }
+      ],
+      "ctrl-=": [
+        "zed::IncreaseBufferFontSize",
+        {
+          "persist": true
+        }
+      ]
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-k ctrl-s": "git::ToggleStaged",
+      "ctrl-k ctrl+s": "git_panel::FocusChanges",
+
+      "f12": null,
+      "ctrl-shift-f10": null,
+      "shift-f12": null,
+      "alt-f12": null,
+      "ctrl-alt-f12": null,
+      "ctrl-k": null,
+      "ctrl-shift-l": null,
+      "ctrl-\\": null,
+      "ctrl-f3": "editor::FindAllReferences",
+      "alt-shift-f12": null,
+
+      "f3": "editor::GoToDefinition",
+      "shift-f3": "editor::GoToTypeDefinition",
+      "ctrl-k ctrl-shift-c": "workspace::CopyPath"
+    }
+  },
+  {
+    "context": "Workspace",
+    "bindings": {
+      "ctrl-alt-h": [
+        "task::Spawn",
+        {
+          "reveal_target": "dock"
+        }
+      ],
+      "f5": null,
+      "shift-f5": null,
+      "ctrl-shift-g": null
+    }
+  },
+  {
+    "context": "Workspace && debugger_stopped",
+    "bindings": {
+      "f4": "debugger::StepOver",
+      "shift-f4": "debugger::Continue",
+      "ctrl-shift-f4": "debugger::StepBack",
+      "f5": "debugger::StepInto",
+      "shift-f5": "debugger::StepOut"
+    }
+  },
+  {
+    "context": "Workspace && debugger_running",
+    "bindings": {
+      "shift-f9": "debugger::Stop",
+      "shift-f4": "debugger::Pause"
+    }
+  },
+  {
+    "context": "Pane && (ProjectSearchBar || BufferSearchBar)",
+    "bindings": {
+      "f3": "search::SelectNextMatch",
+      "shift+f3": "search::SelectPreviousMatch"
+    }
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      "f3": null,
+      "shift-f3": null,
+      "alt-left": "pane::GoBack",
+      "alt-right": "pane::GoForward"
+    }
+  },
+  {
+    "context": "(OutlinePanel && not_editing)",
+    "bindings": {
+      "ctrl-alt-shift-c": null
+    }
+  },
+  {
+    "context": "ProjectPanel",
+    "bindings": {
+      "ctrl-k ctrl-shift-c": null
+    }
+  },
+  {
+    "context": "(Editor && mode == full)",
+    "bindings": {
+      "ctrl-shift-o": null
+    }
+  },
+  {
+    "context": "Editor && selection != null",
+    "bindings": {
+      "ctrl-shift-l": "editor::SelectAllMatches"
+    }
+  }
+]

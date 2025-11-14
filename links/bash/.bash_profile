@@ -4,3 +4,4 @@
 for file in ~/.{exports,path,options,bashrc}; do
 	[[ -r "$file" && -f "$file" ]] && source "$file" || echo "$file not found!";
 done;
+. "$HOME/.cargo/env"

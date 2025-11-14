@@ -14,7 +14,9 @@ aliases:
     pc: pr create
     ps: pr checkout
     po: pr view --web
-    show-conflicts: pr list --author="@me" --json=headRefName,number,isDraft,mergeable,title,url --jq='map(select(.mergeable == "CONFLICTING"))'
+    show-conflicts: pr-list 'map(select(.mergeable == "CONFLICTING"))' '{{range .}}{{tablerow ((autocolor (colorstate .) (printf "#%v" .number)) | hyperlink .url) (truncate 50 .title) (colorhex "#ffa500" .headRefName) ((timeago .updatedAt) | autocolor "blue")}}{{end}}' -- --author='@me'
+    show-reviewable: pr-list 'map(select(.state == "OPEN" and .mergeable != "CONFLICTING" and (.isDraft | not) and (.statusCheckRollup | all(.conclusion != "FAILURE"))))' '{{range .}}{{tablerow (printf "[%s](<%s>)" .title .url)}}{{end}}' -- --author='@me'
+    needs-work: pr-list 'map(select(.mergeable == "CONFLICTING" or (.statusCheckRollup | any(.conclusion == "FAILURE"))))' '{{range .}}{{tablerow ((autocolor (colorstate .) (printf "#%v" .number)) | hyperlink .url) (truncate 50 .title) (colorhex "#ffa500" .headRefName) ((timeago .updatedAt) | autocolor "blue")}}{{end}}' -- --author='@me'
 # The path to a unix socket through which send HTTP connections. If blank, HTTP traffic will be handled by net/http.DefaultTransport.
 http_unix_socket:
 # What web browser gh should use when opening URLs. If blank, will refer to environment.

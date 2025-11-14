@@ -1,9 +1,16 @@
-# Env variables for init
-export VOLTA_HOME="$HOME/.volta"
-export POSH_CONFIG="$HOME/.config/posh-config.json"
+# XDG env vars
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_DATA_HOME="$HOME/.local/share"
 
-export EDITOR="code --wait --reuse-window"
-export GH_DASH_CONFIG="$HOME/.config/gh/gh-dash.yaml"
-export PNPM_HOME="$HOME/.local/share/pnpm"
+# Env variables for init
+export VOLTA_HOME="$XDG_DATA_HOME/volta"
+export POSH_CONFIG="$XDG_CONFIG_HOME/posh-config.json"
+
+export EDITOR="zed --wait --add"
+export GH_DASH_CONFIG="$XDG_CONFIG_HOME/gh/gh-dash.yaml"
+export PNPM_HOME="$XDG_DATA_HOME/pnpm"
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
+
+# Rust toolchain stuff
+source "$HOME/.cargo/env"

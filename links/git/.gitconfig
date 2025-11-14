@@ -37,7 +37,7 @@
 	# Shorthand aliases
 	fp = push --force
 	fixup = commit --amend --no-edit
-	undo = reset HEAD~1
+	undo = "! git reset HEAD~${1:-1}; #"
 
 	# Stage all hunks matching the provided regex.
 	addgrep = "! REGEX=$1 shift && git diff -U1 -I -G\"$REGEX\" \
@@ -62,3 +62,5 @@
 
 	# Get all ignored files in the given folder.
 	show-ignored = "ls-files --full-name -o --ignored --exclude-standard --"
+[branch]
+	autoSetupMerge = simple

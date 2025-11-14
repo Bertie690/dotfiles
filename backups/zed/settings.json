@@ -1,0 +1,167 @@
+// Zed settings
+//
+// For information on how to configure Zed, see the Zed
+// documentation: https://zed.dev/docs/configuring-zed
+//
+// To see all of Zed's default settings without changing your
+// custom settings, run `zed: open default settings` from the
+// command palette (cmd-shift-p / ctrl-shift-p)
+{
+  "buffer_font_size": 14.01,
+  "preview_tabs": {
+    "enable_preview_from_file_finder": true,
+    "enable_preview_from_code_navigation": true
+  },
+  "file_finder": {
+    "include_ignored": "all"
+  },
+  "restore_on_startup": "last_workspace",
+  "buffer_line_height": { "custom": 1.4 },
+  "buffer_font_fallbacks": ["Consolas", "Segoe UI Symbol", "Segoe UI Emoji"],
+  "ui_font_family": "Segoe UI",
+  "audio": {
+    "experimental.rodio_audio": true
+  },
+  "toolbar": {
+    "code_actions": true,
+    "selections_menu": true,
+    "quick_actions": false,
+    "breadcrumbs": false
+  },
+  "close_on_file_delete": true,
+  "use_smartcase_search": true,
+  "project_panel": {
+    "hide_gitignore": false,
+    "hide_hidden": true
+  },
+  "hidden_files": ["node_modules", "tmp"],
+  "wsl_connections": [
+    {
+      "distro_name": "Ubuntu",
+      "user": null,
+      "projects": [
+        {
+          "paths": ["/home/taylo/github/biome"]
+        },
+        {
+          "paths": ["/home/taylo/github/pokerogue"]
+        },
+        {
+          "paths": ["/home/taylo/github/zed-keymap-converter/./"]
+        },
+        {
+          "paths": ["/home/taylo/racket"]
+        }
+      ]
+    }
+  ],
+  "tabs": {
+    "file_icons": true,
+    "git_status": true
+  },
+  "disable_ai": true,
+  "debugger": {
+    "button": true,
+    "dock": "left"
+  },
+  "minimap": {
+    "show": "always",
+    "current_line_highlight": "gutter"
+  },
+  "git_panel": {
+    "dock": "left"
+  },
+  "git": {
+    "hunk_style": "staged_hollow",
+    "gutter_debounce": 15,
+    "inline_blame": {
+      "show_commit_summary": true,
+      "delay_ms": 100
+    }
+  },
+  "terminal": {
+    "minimum_contrast": 30.0,
+    "default_height": 240.0,
+    "line_height": "standard",
+    "alternate_scroll": "on",
+    "toolbar": {
+      "breadcrumbs": true
+    },
+    "font_family": "Consolas NF"
+  },
+  "telemetry": {
+    "diagnostics": true
+  },
+  "base_keymap": "VSCode",
+  "use_system_path_prompts": false,
+  "autosave": {
+    "after_delay": {
+      "milliseconds": 1000
+    }
+  },
+  "confirm_quit": true,
+  "buffer_font_family": "Consolas NF",
+  "file_types": {
+    "xml": ["*.xml", "*.xml.append"],
+    "svelte": ["*.svelte"],
+    "properties": ["config"]
+  },
+  "auto_indent_on_paste": true,
+  "use_on_type_format": true,
+  "icon_theme": "VSCode Icons for Zed (Dark)",
+  "ui_font_size": 16,
+  "theme": "One Dark Pro",
+  "max_tabs": 10,
+  "title_bar": {
+    "show_menus": true,
+    "show_branch_icon": true
+  },
+  "use_system_prompts": false,
+  "lsp": {
+    "rust-analyzer": {
+      "initialization_options": {
+        // get more cargo-less diagnostics from rust-analyzer,
+        // which might include false-positives (those can be turned off by their names)
+        "diagnostics": {
+          "experimental": {
+            "enable": true
+          }
+        },
+        // To check the `lib` target only.
+        "cargo": {
+          "allTargets": false
+        },
+        // Use `-p` instead of `--workspace` for cargo check
+        "check": {
+          "workspace": false
+        }
+      }
+    }
+  },
+  "languages": {
+    "JavaScript": {
+      "language_servers": ["tsgo"],
+      "formatter": { "language_server": { "name": "biome" } },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
+      }
+    },
+    "TypeScript": {
+      "language_servers": ["tsgo"],
+      "formatter": { "language_server": { "name": "biome" } },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
+      }
+    },
+    "TSX": {
+      "language_servers": ["tsgo", "biome"],
+      "formatter": { "language_server": { "name": "biome" } },
+      "code_actions_on_format": {
+        "source.fixAll.biome": true,
+        "source.organizeImports.biome": true
+      }
+    }
+  }
+}
