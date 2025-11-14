@@ -1,0 +1,19 @@
+name: Check Shell Scripts
+
+on:
+  push:
+    branches:
+      - "main"
+  pull-request:
+    branches:
+      - "main"
+
+jobs:
+  run-shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Git repository
+        uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4.3.0
+
+      - name: Run Shellcheck
+        run: shellcheck scripts/**/*
