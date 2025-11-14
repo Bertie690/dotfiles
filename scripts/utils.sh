@@ -42,7 +42,8 @@ error () {
 }
 
 # Log error text and exit the program.
+# The second argument is used as the exit code if provided, otherwise defaulting to `1`.
 quit () {
-    error "$1"
-	exit 1
+    error "$1" >&2
+	exit "${2:-1}"
 }
