@@ -1,6 +1,10 @@
-# Initialize prompts/aliases file if it exists
-for file in ~/.{prompt,aliases}; do
-    [ -r $file ] && [ -f $file ] && source $file;
+# Initialize prompts/aliases file if exist
+for file in "$(systemd-path user-configuration)"/env/{.prompt,.aliases}; do
+   if [[ -r "$file" && -f "$file" ]]; then
+       source "$file"
+   else
+       echo "$file not found!"
+   fi
 done
 
 # don't put duplicate lines or lines starting with space in the history.

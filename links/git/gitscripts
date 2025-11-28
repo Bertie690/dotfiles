@@ -75,6 +75,17 @@ link_ignored() {
 	done
 }
 
+# Used for the branches-touched command.
+branches_touched() {
+	default_branch="$2"
+	git branch --format='%(refname:short)' | while read -r branch; do
+		base="$(git merge-base "$branch" "$default_branch")"
+		if git diff "$branch" "$base" | grep -q "a/$1"; then
+			echo "$branch";
+		fi
+	done;
+}
+
 COMMAND="$1"
 shift
 $COMMAND "$@"

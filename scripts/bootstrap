@@ -10,34 +10,35 @@ shopt -s failglob
 shopt -s dotglob
 shopt -s globstar
 
-# Go to dotfiles root
-cd "$(dirname "${BASH_SOURCE[0]}")/.."
-DOTFILES_ROOT=$(pwd -P)
+# A globally selected option applying to the rest of the current links ("skip all", etc).
+globalAction=''
 
 # An associative array holding all files we've already seen, used to prevent duplicate symlinks.
 declare -A seen_files
 
-# Grab all variables and functions defined in our config files.
-if [[ -r scripts/utils.sh && -f scripts/utils.sh ]]; then
-    source scripts/utils.sh
+# Go to scripts folder & initialize config files
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+if [[ -r utils.sh && -f utils.sh ]]; then
+    source utils.sh
 else
     printf "File utils.sh was not found during initialization!\n" >&2;
     exit 1
 fi
 
-if [[ -r scripts/bootstrap_config.sh && -f scripts/bootstrap_config.sh ]]; then
-    source scripts/bootstrap_config.sh
+if [[ -r bootstrap_config.sh && -f bootstrap_config.sh ]]; then
+    source bootstrap_config.sh
 else
     quit "File bootstrap_config.sh was not found during initialization!";
 fi
 
-# A globally selected option applying to the rest of the current links ("skip all", etc).
-globalAction=''
+cd ..
+DOTFILES_ROOT=$(pwd -P)
 
 # Iterate and symlink all files and folders in $sources_to_targets.
 run () {
     for src_path in "${sources_order[@]}"; do
-        dst_path=~/${sources_to_targets[$src_path]}
+        dst_path=${sources_to_targets[$src_path]}
         # Trim trailing slashes to make the error messages nicer
         dst_path=${dst_path%/}
         src_path=$DOTFILES_ROOT/$src_path
@@ -93,6 +94,8 @@ link_files () {
 
     # Check if the destination already exists, linking the file immediately if not found.
     if [[ ! -f "$dst" && ! -d "$dst" && ! -L "$dst" ]]; then
+	echo $dst
+	mkdir -p "$(dirname "$dst")"
         ln -s "$src" "$dst"
         success "Symlinked $(orange "$src") to $(blue "$dst")!"
         return;
@@ -149,10 +152,12 @@ do_action () {
             return ;;
         "overwrite" )
             rm -rf "$dst"
+            mkdir -p "$(dirname "$dst")"
             ln -sf "$src" "$dst"
             success "Forcibly linked $(orange "$src") to $(blue "$dst")!";;
         "backup" )
             mv "$dst" "$dst".backup
+            mkdir -p "$(dirname "$dst")"
             ln -s "$src" "$dst"
             success "Backed up $(blue "$dst") to $(green "$dst".backup) and linked successfully!";;
         *) ;;
@@ -161,3 +166,4 @@ do_action () {
 
 run
 success "DONE!"
+

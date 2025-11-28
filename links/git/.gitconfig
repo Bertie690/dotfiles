@@ -1,6 +1,6 @@
 # Include local gitconfig if it exists
 [include]
-    path = ~/.local.gitconfig
+    path = ./local.gitconfig
 
 [user]
     name = Bertie690
@@ -55,7 +55,7 @@
 
     # Get the name of the upstream remote.
     get-upstream-remote = !LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
-    # Squash all changes on yaour branch onto the provided HEAD (defaults to upstream branch)
+    # Squash all changes on your branch onto the provided HEAD (defaults to upstream branch)
     squash-all = "! git fetch --all && git reset --hard \"${1:-$(git get-upstream-remote)}\" && git merge --squash --no-commit HEAD@{1}; #"
 
     # Get the path to the main worktree.
@@ -67,3 +67,7 @@
 
     # Get all ignored files in the given folder.
     show-ignored = "ls-files --full-name -o --ignored --exclude-standard --"
+
+    # List all branches that have changed the given file relative to the merge base.
+    # The 2nd argument is used as the HEAD for diff checks (or the upstream remote if unspecified)
+    branches-touched = "! ~/.gitscripts branches_touched \"$1\" \"${2:-$(git get-upstream-remote)}\"; #"
