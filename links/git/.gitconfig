@@ -38,6 +38,10 @@
     showPatch = true
 [rerere]
     enabled = false
+[credential "https://github.com"]
+    helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+    helper = !/usr/bin/gh auth git-credential
 [alias]
     # Shorthand aliases
     fp = push --force
@@ -63,11 +67,16 @@
 
     # Symlink all ignored files in the given folder with the versions from the main worktree.
     # Intended for use to copy config files when creating a new `git` worktree.
-    link-ignored = "! ~/.gitscripts link_ignored"
+    link-ignored = "! $XDG_CONFIG_HOME/git/gitscripts link_ignored"
 
     # Get all ignored files in the given folder.
     show-ignored = "ls-files --full-name -o --ignored --exclude-standard --"
 
     # List all branches that have changed the given file relative to the merge base.
     # The 2nd argument is used as the HEAD for diff checks (or the upstream remote if unspecified)
-    branches-touched = "! ~/.gitscripts branches_touched \"$1\" \"${2:-$(git get-upstream-remote)}\"; #"
+    branches-touched = "! $XDG_CONFIG_HOME/git/gitscripts branches_touched \"$1\" \"${2:-$(git get-upstream-remote)}\"; #"
+
+    # List all files in the current repository in descending order of last commit date (oldest first).
+    oldest = "! git ls-tree -r --name-only HEAD -z | TZ=UTC xargs -0 -I_ git --no-pager log -1 --date=iso-local --format='%ad _' -- _ | sort; #"
+    # List all files in the current repository in ascending order of last commit date (newest first).
+    newest = "! git ls-tree -r --name-only HEAD -z | TZ=UTC xargs -0 -I_ git --no-pager log -1 --date=iso-local --format='%ad _' -- _ | sort -r; #"
