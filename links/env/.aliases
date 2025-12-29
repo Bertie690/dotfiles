@@ -1,5 +1,9 @@
+#! /usr/bin/bash
+
 # Custom git aliases!
-alias gm='git merge --no-edit $(git get-upstream-remote)'
+function gm () {
+    git merge --no-edit "${1:-"$(git get-pr-target-branch)"}"
+}
 
 # Misc utilities
 alias killstopped='kill -9 $(jobs -p -s)'

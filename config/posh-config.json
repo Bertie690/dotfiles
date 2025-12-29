@@ -36,7 +36,7 @@
           "foreground": "#d2f2d7",
           "background": "#546e7a",
           "template": " {{ if .Env.VSCODE_INJECTION }} - {{ end }}{{ .Icon }}{{ if .WSL }} (WSL){{ end }} ",
-          "properties": {
+          "options": {
             "macos": "",
             "windows": ""
           },
@@ -69,7 +69,7 @@
           "foreground": "#193549",
           "background": "#3e9dea",
           "template": " {{ .Path }} ",
-          "properties": {
+          "options": {
             "style": "agnoster_short",
             "hide_root_location": true,
             "max_depth": 4,
@@ -98,7 +98,7 @@
             "{{ if gt .Behind 0 }}#B388FB{{ end }}"
           ],
           "template": " {{ .HEAD }}{{ if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }}  {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }}  {{ .Staging.String }}{{ end }}",
-          "properties": {
+          "options": {
             "status_formats": {
               "Modified": " ±%d"
             },
@@ -106,11 +106,6 @@
             "fetch_upstream_icon": true,
             "untracked_modes": {
               "/Users/user/Projects/oh-my-posh/": "no"
-            },
-            "source": "cli",
-            "mapped_branches": {
-              "feat/*": "🚀 ",
-              "bug/*": "🐛 "
             }
           },
           "cache": {

@@ -11,6 +11,8 @@
     all = true
 [branch]
     autoSetupMerge = simple
+[column]
+    ui = auto column
 [filter "lfs"]
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
@@ -57,10 +59,11 @@
         | grepdiff --output-matching=hunk -E \"$REGEX\" \
         | git apply --cached --reverse"
 
-    # Get the name of the upstream remote.
-    get-upstream-remote = !LC_ALL=C echo "upstream/$(git remote show upstream | sed -n '/HEAD branch/s/.*: //p')"
-    # Squash all changes on your branch onto the provided HEAD (defaults to upstream branch)
-    squash-all = "! git fetch --all && git reset --hard \"${1:-$(git get-upstream-remote)}\" && git merge --squash --no-commit HEAD@{1}; #"
+    # Get the target branch name (remote/path) of the current branch's pull request.
+    # Requires said branch be pushed to upstream.
+    get-pr-target-branch = "! $XDG_CONFIG_HOME/git/gitscripts get_pr_target_branch"
+    # Squash all changes on your branch onto the provided HEAD (defaults to `get-pr-target-branch`).
+    squash-all = "! REMOTE=${1:-$(git get-pr-target-branch)} shift && git reset --hard \"$REMOTE\" && git merge --squash --no-commit $@ HEAD@{1}"
 
     # Get the path to the main worktree.
     main-worktree = "! dirname \"$(git rev-parse --path-format=absolute --git-common-dir)\""
@@ -74,9 +77,11 @@
 
     # List all branches that have changed the given file relative to the merge base.
     # The 2nd argument is used as the HEAD for diff checks (or the upstream remote if unspecified)
-    branches-touched = "! $XDG_CONFIG_HOME/git/gitscripts branches_touched \"$1\" \"${2:-$(git get-upstream-remote)}\"; #"
+    branches-touched = "! $XDG_CONFIG_HOME/git/gitscripts branches_touched \"$1\" \"${2:-$(git get-pr-target-branch)}\"; #"
 
     # List all files in the current repository in descending order of last commit date (oldest first).
     oldest = "! git ls-tree -r --name-only HEAD -z | TZ=UTC xargs -0 -I_ git --no-pager log -1 --date=iso-local --format='%ad _' -- _ | sort; #"
     # List all files in the current repository in ascending order of last commit date (newest first).
     newest = "! git ls-tree -r --name-only HEAD -z | TZ=UTC xargs -0 -I_ git --no-pager log -1 --date=iso-local --format='%ad _' -- _ | sort -r; #"
+[http]
+    cookiefile = /home/taylo/.gitcookies

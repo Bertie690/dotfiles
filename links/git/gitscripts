@@ -45,8 +45,8 @@ error () {
 
 # Used for the link-ignored git command.
 link_ignored() {
-	main_worktree=dirname "$(git rev-parse --path-format=absolute --git-common-dir)"
-	curr_worktree=git rev-parse --path-format=absolute --show-toplevel
+	main_worktree=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")
+	curr_worktree=$(git rev-parse --path-format=absolute --show-toplevel)
 	if [ "$#" != 1 ]; then
 		echo "Expected 1 argument, but got $#."
 		return 1
@@ -84,6 +84,17 @@ branches_touched() {
 			echo "$branch";
 		fi
 	done;
+}
+
+# Function used for the get-pr-target-branch script.
+get_pr_target_branch () {
+	PR_NUMBER="${1:-$(gh pr view --json number -q .number)}"
+	gh api "repos/{owner}/{repo}/pulls/$PR_NUMBER"  --jq '"\(.base.repo.clone_url) \(.base.ref)"' \
+   	| while read -r url branch; do
+      remote=$(git remote -v | awk -v u="$url" '$2==u {print $1; exit}');
+      echo "${remote}/${branch}";
+    done
+
 }
 
 COMMAND="$1"
