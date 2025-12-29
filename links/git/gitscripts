@@ -89,6 +89,11 @@ branches_touched() {
 # Function used for the get-pr-target-branch script.
 get_pr_target_branch () {
 	PR_NUMBER="${1:-$(gh pr view --json number -q .number)}"
+	# Ensure exit code of command is nonzero before proceeding
+	CODE=$?
+	if [ $CODE -eq 0 ]; then
+		return $CODE
+	fi
 	gh api "repos/{owner}/{repo}/pulls/$PR_NUMBER"  --jq '"\(.base.repo.clone_url) \(.base.ref)"' \
    	| while read -r url branch; do
       remote=$(git remote -v | awk -v u="$url" '$2==u {print $1; exit}');
