@@ -1,7 +1,6 @@
 # Include local gitconfig if it exists
 [include]
     path = ./local.gitconfig
-
 [user]
     name = Bertie690
     email = taylormw163@gmail.com
@@ -59,11 +58,11 @@
         | grepdiff --output-matching=hunk -E \"$REGEX\" \
         | git apply --cached --reverse"
 
-    # Get the target branch name (remote/path) of the current branch's pull request.
-    # Requires said branch be pushed to upstream.
-    get-pr-target-branch = "! $XDG_CONFIG_HOME/git/gitscripts get_pr_target_branch"
-    # Squash all changes on your branch onto the provided HEAD (defaults to `get-pr-target-branch`).
-    squash-all = "! REMOTE=${1:-$(git get-pr-target-branch)} shift && git reset --hard \"$REMOTE\" && git merge --squash --no-commit $@ HEAD@{1}"
+    # Get the target branch name (remote/path) of the upstream remote's default branch.
+    # Currently only supports `upstream`/`origin` as valid names.
+    get-default-branch = "! $XDG_CONFIG_HOME/git/gitscripts get_default_branch"
+    # Squash all changes on your branch onto the provided HEAD (defaults to `get-default-branch`).
+    squash-all = "! REMOTE=${1:-$(git get-default-branch)} shift && git reset --hard \"$REMOTE\" && git merge --squash --no-commit $@ HEAD@{1}"
 
     # Get the path to the main worktree.
     main-worktree = "! dirname \"$(git rev-parse --path-format=absolute --git-common-dir)\""
@@ -75,9 +74,8 @@
     # Get all ignored files in the given folder.
     show-ignored = "ls-files --full-name -o --ignored --exclude-standard --"
 
-    # List all branches that have changed the given file relative to the merge base.
-    # The 2nd argument is used as the HEAD for diff checks (or the upstream remote if unspecified)
-    branches-touched = "! $XDG_CONFIG_HOME/git/gitscripts branches_touched \"$1\" \"${2:-$(git get-pr-target-branch)}\"; #"
+    # List all branches that have changed the given files relative to the merge base.
+    branches-touched = "! $XDG_CONFIG_HOME/git/gitscripts branches_touched"
 
     # List all files in the current repository in descending order of last commit date (oldest first).
     oldest = "! git ls-tree -r --name-only HEAD -z | TZ=UTC xargs -0 -I_ git --no-pager log -1 --date=iso-local --format='%ad _' -- _ | sort; #"

@@ -1,10 +1,11 @@
-#! /usr/bin/env sh
+#! /usr/bin/env bash
 
 # File containing shell scripts used by `.gitconfig`.
-# Must be run in `sh` as that is the shell Git uses to execute things
 # Notes: Setting the file to "executable" is recommended.
 
-## Helpers
+set -euo pipefail
+
+## Utilities
 
 # Make text orange.
 orange () {
@@ -38,7 +39,7 @@ success () {
 
 # Annotate text with a red [✗].
 error () {
-	printf "[ $(red '✗') ] %s\n" "$1"
+	printf "[ $(red '✗') ] %s\n" "$1" >&2
 }
 
 ## Functions
@@ -77,29 +78,47 @@ link_ignored() {
 
 # Used for the branches-touched command.
 branches_touched() {
-	default_branch="$2"
+	if [ -z "$*" ]; then
+		error No files specified!
+		return 1
+	fi
+
+	default="$(get_default_branch)"
 	git branch --format='%(refname:short)' | while read -r branch; do
-		base="$(git merge-base "$branch" "$default_branch")"
-		if git diff "$branch" "$base" | grep -q "a/$1"; then
-			echo "$branch";
+		base="$(git merge-base "$branch" "$default")"
+		# error = changes made = good
+		if ! git diff --quiet "$branch" "$base" -- "$@"; then
+			echo "$branch"
 		fi
 	done;
 }
 
-# Function used for the get-pr-target-branch script.
-get_pr_target_branch () {
-	PR_NUMBER="${1:-$(gh pr view --json number -q .number)}"
-	# Ensure exit code of command is nonzero before proceeding
-	CODE=$?
-	if [ $CODE -eq 0 ]; then
-		return $CODE
-	fi
-	gh api "repos/{owner}/{repo}/pulls/$PR_NUMBER"  --jq '"\(.base.repo.clone_url) \(.base.ref)"' \
-   	| while read -r url branch; do
-      remote=$(git remote -v | awk -v u="$url" '$2==u {print $1; exit}');
-      echo "${remote}/${branch}";
-    done
+default_branch=""
 
+# get_default_branch obtains the default branch for either the upstream or origin remotes using string substitution.
+# It will cache its result inside the `default_branch` variable if allowed.
+get_default_branch() {
+	if [ "$default_branch" ]; then
+		echo "$default_branch"
+		return
+	fi
+
+	local remote
+	SUPPORTED_REMOTES=(upstream origin)
+	for name in "${SUPPORTED_REMOTES[@]}"; do
+		if [ -n "$(git config --get remote."$name".url)" ]; then
+			remote=$name
+			break
+		fi
+	done
+
+	if [ -z "$remote" ]; then
+		error "Current remote is not in supported remotes!\nSupported remotes: ${SUPPORTED_REMOTES[*]}"
+		return 1
+	fi
+
+	default_branch="$remote"/"$(git remote show "$remote" | sed -n '/HEAD branch/s/.*: //p')"
+	echo "$default_branch"
 }
 
 COMMAND="$1"
