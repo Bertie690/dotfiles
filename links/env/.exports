@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 # XDG env vars
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -11,6 +13,9 @@ export GH_DASH_CONFIG="$XDG_CONFIG_HOME/gh/gh-dash.yaml"
 export PNPM_HOME="$XDG_DATA_HOME/pnpm"
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
+
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 # Rust toolchain stuff
 source "$HOME/.cargo/env"

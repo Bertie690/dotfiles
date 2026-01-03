@@ -43,6 +43,20 @@
     helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
     helper = !/usr/bin/gh auth git-credential
+[http]
+    cookiefile = ~/.gitcookies
+
+# Open Git help pages on https://git-scm.com/docs from WSL.
+[help]
+    browser = gitscm
+    # Point Git's help documentation to the Windows Git installation to allow us to open inside web.
+    # This is only required because git crashes if the files don't exist
+    htmlPath = /mnt/c/Program Files/Git/mingw64/share/doc/git-doc
+    format = web
+    autoCorrect = prompt
+[browser "gitscm"]
+    cmd = "wslview \"https://git-scm.com/docs/\"$(basename \"$1\")\"\"; #"
+
 [alias]
     # Shorthand aliases
     fp = push --force
@@ -81,5 +95,3 @@
     oldest = "! git ls-tree -r --name-only HEAD -z | TZ=UTC xargs -0 -I_ git --no-pager log -1 --date=iso-local --format='%ad _' -- _ | sort; #"
     # List all files in the current repository in ascending order of last commit date (newest first).
     newest = "! git ls-tree -r --name-only HEAD -z | TZ=UTC xargs -0 -I_ git --no-pager log -1 --date=iso-local --format='%ad _' -- _ | sort -r; #"
-[http]
-    cookiefile = /home/taylo/.gitcookies
