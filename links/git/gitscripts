@@ -85,9 +85,8 @@ branches_touched() {
 
 	default="$(get_default_branch)"
 	git branch --format='%(refname:short)' | while read -r branch; do
-		base="$(git merge-base "$branch" "$default")"
-		# error = changes made = good
-		if ! git diff --quiet "$branch" "$base" -- "$@"; then
+		# error = changes made = log
+		if ! git diff --quiet --merge-base "$default" "$branch" -- "$@"; then
 			echo "$branch"
 		fi
 	done;

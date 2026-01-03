@@ -73,7 +73,7 @@
         | git apply --cached --reverse"
 
     # Get the target branch name (remote/path) of the upstream remote's default branch.
-    # Currently only supports `upstream`/`origin` as valid names.
+    # Currently only supports `upstream`/`origin` as valid remote names.
     get-default-branch = "! $XDG_CONFIG_HOME/git/gitscripts get_default_branch"
     # Squash all changes on your branch onto the provided HEAD (defaults to `get-default-branch`).
     squash-all = "! REMOTE=${1:-$(git get-default-branch)} shift && git reset --hard \"$REMOTE\" && git merge --squash --no-commit $@ HEAD@{1}"
@@ -88,7 +88,7 @@
     # Get all ignored files in the given folder.
     show-ignored = "ls-files --full-name -o --ignored --exclude-standard --"
 
-    # List all branches that have changed the given files relative to the merge base.
+    # List all branches that have changed the given files relative to the default branch.
     branches-touched = "! $XDG_CONFIG_HOME/git/gitscripts branches_touched"
 
     # List all files in the current repository in descending order of last commit date (oldest first).
