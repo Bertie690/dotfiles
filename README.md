@@ -8,6 +8,6 @@ Partially inspired by https://github.com/holman/dotfiles/'s extension-based appr
 
 Requires Bash 4.4 or greater to make use of `readarray`.
 
-Clone the repository, tweak the settings in [bootstrap.config](./scripts/bootstrap.config) to your liking, then run [bootstrap.sh](./scripts/bootstrap.sh).
+Clone the repository, tweak the settings in [bootstrap.config](./script/bootstrap.config) to your liking, then run [bootstrap.sh](./script/bootstrap.sh).
 
 All behavior can be fully customized.
