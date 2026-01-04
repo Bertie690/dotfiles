@@ -16,7 +16,7 @@ globalAction=''
 # An associative array holding all files we've already seen, used to prevent duplicate symlinks.
 declare -A seen_files
 
-# Go to scripts folder & initialize config files
+# Go to script folder & initialize config files
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 if [[ -r utils.sh && -f utils.sh ]]; then
