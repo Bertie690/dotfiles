@@ -10,6 +10,7 @@ alias killstopped='kill -9 $(jobs -p -s)'
 
 # enable color support of ls and also add handy aliases
 alias ls='ls --color=auto'
+alias la='ls -a --color=auto'
 alias grep='grep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias egrep='egrep --color=auto'

@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 # Prompt and shell integration setup
 eval "$(oh-my-posh init bash --config "$POSH_CONFIG")"
 

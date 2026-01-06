@@ -1,4 +1,7 @@
-## Options flags
+#! /usr/bin/env bash
+
+# Options flags
+
 # append to the history file, don't overwrite it
 shopt -s histappend
 # Turn on extended globbing
