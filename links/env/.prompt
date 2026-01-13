@@ -1,8 +1,9 @@
 #! /usr/bin/env bash
 
 # Prompt and shell integration setup
+
 eval "$(oh-my-posh init bash --config "$POSH_CONFIG")"
 
-eval "$(gh completion -s bash)"
+command -v gh && eval "$(gh completion -s bash)" || true
 
 [[ "$TERM_PROGRAM" == "vscode" ]] && . "$(code --locate-shell-integration-path bash)"

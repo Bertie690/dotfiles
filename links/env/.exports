@@ -8,7 +8,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export VOLTA_HOME="$XDG_DATA_HOME/volta"
 export POSH_CONFIG="$XDG_CONFIG_HOME/posh-config.json"
 
-export EDITOR="zed --wait --add"
+export EDITOR="code --wait --add"
 export GH_DASH_CONFIG="$XDG_CONFIG_HOME/gh/gh-dash.yaml"
 export PNPM_HOME="$XDG_DATA_HOME/pnpm"
 export GOROOT=/usr/local/go
@@ -18,4 +18,4 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
 # Rust toolchain stuff
-source "$HOME/.cargo/env"
+[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"

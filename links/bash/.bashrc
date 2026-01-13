@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 # Initialize prompts/aliases file if exist
 for file in "$(systemd-path user-configuration)"/env/{.prompt,.aliases}; do
    if [[ -r "$file" && -f "$file" ]]; then

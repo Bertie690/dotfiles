@@ -1,2 +1,5 @@
-# Custom PATH extensions
-export PATH="$GOROOT/bin:$GOPATH/bin:$VOLTA_HOME/bin:$PNPM_HOME:$PATH:$HOME/.local/bin"
+#! /usr/bin/env bash
+
+# Custom PATH extensions!
+
+export PATH="$HOME/bin::$HOME/.local/bin/$GOROOT/bin:$GOPATH/bin:$VOLTA_HOME/bin:$PNPM_HOME:$PATH"
