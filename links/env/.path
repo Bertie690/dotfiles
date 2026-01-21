@@ -2,4 +2,4 @@
 
 # Custom PATH extensions!
 
-export PATH="$HOME/bin::$HOME/.local/bin/$GOROOT/bin:$GOPATH/bin:$VOLTA_HOME/bin:$PNPM_HOME:$PATH"
+export PATH="$HOME/bin:$HOME/.local/bin:$GOROOT/bin:$GOPATH/bin:$VOLTA_HOME/bin:$PNPM_HOME:$PATH"
