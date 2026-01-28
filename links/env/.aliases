@@ -1,11 +1,22 @@
-#! /usr/bin/env bash
+#! /bin/bash
 
 # Custom git aliases!
+
+# Shortcut to merge a branch into the current branch.
+# Supports branch name as first argument, defaulting to the current branch's preset default if omitted.
 function gm () {
-    git merge --no-edit "${1:-"$(git get-default-branch)"}"
+    local branch;
+    if [[ $# == 0 || $1 =~ ^- ]]; then
+        branch="$(git get-default-branch)"
+    else
+        branch="$1"
+        shift
+    fi
+    git merge --no-edit "$@" "$branch"
 }
 
 # Misc utilities
+# Kill all stopped processes
 alias killstopped='kill -9 $(jobs -p -s)'
 
 # enable color support of ls and also add handy aliases

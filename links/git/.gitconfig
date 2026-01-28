@@ -76,7 +76,15 @@
     # Currently only supports `upstream`/`origin` as valid remote names.
     get-default-branch = "! $XDG_CONFIG_HOME/git/gitscripts get_default_branch"
     # Squash all changes on your branch onto the provided HEAD (defaults to `get-default-branch`).
-    squash-all = "! REMOTE=${1:-$(git get-default-branch)} shift && git reset --hard \"$REMOTE\" && git merge --squash --no-commit $@ HEAD@{1}"
+    squash-all = "! f() { \
+        if [ $# -gt 0 ]; then \
+            REMOTE=\"$1\"; shift; \
+        else \
+            REMOTE=\"$(git get-default-branch)\"; \
+        fi; \
+        git reset --hard \"$REMOTE\" && \
+        git merge --squash --no-commit \"$@\" HEAD@{1}; \
+    }; f "
 
     # Get the path to the main worktree.
     main-worktree = "! dirname \"$(git rev-parse --path-format=absolute --git-common-dir)\""

@@ -17,5 +17,10 @@ export GOPATH=$HOME/go
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 
-# Rust toolchain stuff
+# Initialize toolchain env files if existing
+
+# shellcheck disable=SC1091
 if [ -f "$HOME/.cargo/env" ]; then source "$HOME/.cargo/env"; fi
+
+# shellcheck disable=SC1091
+if [ -f "$HOME/.ghcup/env" ]; then source "$HOME/.ghcup/env"; fi
