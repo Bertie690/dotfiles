@@ -1,4 +1,4 @@
-# Include local gitconfig if it exists
+# Include local gitconfig for machine-specific stuff if it exists
 [include]
     path = ./local.gitconfig
 [user]
@@ -46,16 +46,14 @@
 [http]
     cookiefile = ~/.gitcookies
 
-# Open Git help pages on https://git-scm.com/docs from WSL.
+# Open Git help pages on https://git-scm.com/docs instead of local HTML files.
+# NOTE: This still requires `git-docs` to be installed; git will crash if the files do not exist
 [help]
     browser = gitscm
-    # Point Git's help documentation to the Windows Git installation to allow us to open inside web.
-    # This is only required because git crashes if the files don't exist
-    htmlPath = /mnt/c/Program Files/Git/mingw64/share/doc/git-doc
     format = web
     autoCorrect = prompt
 [browser "gitscm"]
-    cmd = "wslview \"https://git-scm.com/docs/\"$(basename \"$1\")\"\"; #"
+    cmd = "$BROWSER \"https://git-scm.com/docs/\"$(basename \"$1\")\"\"; #"
 
 [alias]
     # Shorthand aliases
@@ -76,15 +74,7 @@
     # Currently only supports `upstream`/`origin` as valid remote names.
     get-default-branch = "! $XDG_CONFIG_HOME/git/gitscripts get_default_branch"
     # Squash all changes on your branch onto the provided HEAD (defaults to `get-default-branch`).
-    squash-all = "! f() { \
-        if [ $# -gt 0 ]; then \
-            REMOTE=\"$1\"; shift; \
-        else \
-            REMOTE=\"$(git get-default-branch)\"; \
-        fi; \
-        git reset --hard \"$REMOTE\" && \
-        git merge --squash --no-commit \"$@\" HEAD@{1}; \
-    }; f "
+    squash-all = "! REMOTE=${1:-$(git get-default-branch)} shift && git reset --hard \"$REMOTE\" && git merge --squash --no-commit $@ HEAD@{1}"
 
     # Get the path to the main worktree.
     main-worktree = "! dirname \"$(git rev-parse --path-format=absolute --git-common-dir)\""
