@@ -44,6 +44,18 @@ error () {
 
 ## Functions
 
+squash_all() {
+	remote=""
+	if [ "$#" -gt 0 ]; then
+		remote="$1"
+		shift
+	else
+		remote="$(get_default_branch)"
+	fi
+
+	git reset --hard "$remote" && git merge --squash --no-commit "$@" 'HEAD@{1}'
+}
+
 # Used for the link-ignored git command.
 link_ignored() {
 	main_worktree=$(dirname "$(git rev-parse --path-format=absolute --git-common-dir)")

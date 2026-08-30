@@ -9,6 +9,13 @@ for file in "$(systemd-path user-configuration)"/env/{.prompt,.aliases}; do
    fi
 done
 
+# Load local (untracked) customizations if present
+# We load it here to allow setting custom aliases (which doesn't play nice in vscode)
+if [[ -r "$(systemd-path user-configuration)"/env/.local && -f "$(systemd-path user-configuration)"/env/.local ]]; then
+    source "$(systemd-path user-configuration)"/env/.local || echo "Error launching local configs!" >&2
+fi
+
+
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
 HISTCONTROL=ignoreboth

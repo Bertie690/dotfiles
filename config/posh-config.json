@@ -27,14 +27,14 @@
       "segments": [
         {
           "options": {
-            "macos": "\ue711",
-            "windows": "\ue70f"
+            "macos": "",
+            "windows": ""
           },
           "cache": {
             "duration": "5m",
             "strategy": "session"
           },
-          "template": " {{ if .Env.VSCODE_INJECTION }}\ue8da - {{ end }}{{ .Icon }}{{ if .WSL }} (WSL){{ end }} ",
+          "template": " {{ if eq .Env.TERM_PROGRAM \"vscode\" }}{{else}}{{ .Icon }}{{ end }}{{ if .WSL }} (WSL){{ end }} ",
           "foreground": "#d2f2d7",
           "background": "#546e7a",
           "type": "os",
@@ -43,7 +43,7 @@
         {
           "foreground": "#193549",
           "templates_logic": "join",
-          "powerline_symbol": "<#14b0c5,background>\ue0b0</>",
+          "powerline_symbol": "<#14b0c5,background></>",
           "background": "#18a81d",
           "type": "battery",
           "style": "powerline",
@@ -51,9 +51,9 @@
             "{{if le .Percentage 10 }}#ff2819{{ else if le .Percentage 25 }}#fd8c30{{ else if le .Percentage 50 }}#e6e604{{ else if le .Percentage 75 }}#91cb0a{{end}}"
           ],
           "templates": [
-            "{{if le .Percentage 10 }} \uf244{{else if le .Percentage 25 }} \uf243{{ else if le .Percentage 50 }} \uf242{{ else if le .Percentage 75 }} \uf241{{ else }} \uf240{{end}} ",
-            "{{ if eq \"Charging\" .State.String }}\udb85\udc0b {{end}}",
-            "{{ if not .Error }}{{ .Percentage }}\uf295 {{ end }}"
+            "{{if le .Percentage 10 }} {{else if le .Percentage 25 }} {{ else if le .Percentage 50 }} {{ else if le .Percentage 75 }} {{ else }} {{end}} ",
+            "{{ if eq \"Charging\" .State.String }}󱐋 {{end}}",
+            "{{ if not .Error }}{{ .Percentage }} {{ end }}"
           ],
           "invert_powerline": true
         },
@@ -64,7 +64,7 @@
             "hide_root_location": true,
             "mapped_locations": {
               "/mnt/c": "C:/",
-              "re:(.*/github)": "\ue709"
+              "re:(.*/github)": ""
             },
             "max_depth": 4,
             "style": "agnoster_short"
@@ -75,7 +75,7 @@
           },
           "template": " {{ .Path }} ",
           "foreground": "#193549",
-          "powerline_symbol": "<parentBackground>\ue0b4</>",
+          "powerline_symbol": "<parentBackground></>",
           "background": "#3e9dea",
           "type": "path",
           "style": "powerline"
@@ -97,7 +97,7 @@
           },
           "template": " {{ .HEAD }}{{ if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}",
           "foreground": "#193549",
-          "powerline_symbol": "\ue0b0",
+          "powerline_symbol": "",
           "background": "#ffeb3b",
           "type": "git",
           "style": "powerline",

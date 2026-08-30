@@ -3,6 +3,7 @@
 # XDG env vars
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_CACHE_HOME="$HOME/.cache"
 
 # Env variables for init
 export VOLTA_HOME="$XDG_DATA_HOME/volta"
@@ -16,6 +17,8 @@ export GOPATH=$HOME/go
 
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+
+export CCACHE_DIR="$XDG_CACHE_HOME/ccache"
 
 # Initialize toolchain env files if existing
 
