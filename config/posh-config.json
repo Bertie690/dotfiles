@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/JanDeDobbeleer/oh-my-posh/main/themes/schema.json",
   "upgrade": {
-    "source": "github",
+    "source": "cdn",
     "interval": "24h",
     "auto": true,
     "notice": true
@@ -11,13 +11,15 @@
       "type": "rprompt",
       "segments": [
         {
+          "type": "time",
+          "style": "plain",
+          "min_width": 50,
           "options": {
             "time_format": "15:04:05"
           },
           "template": " {{ .CurrentDate | date .Format }} ",
           "foreground": "#1393dd",
-          "type": "time",
-          "style": "plain"
+          "background": "#193549"
         }
       ]
     },
@@ -26,6 +28,8 @@
       "alignment": "left",
       "segments": [
         {
+          "type": "os",
+          "style": "plain",
           "options": {
             "macos": "",
             "windows": ""
@@ -36,22 +40,20 @@
           },
           "template": " {{ if eq .Env.TERM_PROGRAM \"vscode\" }}{{else}}{{ .Icon }}{{ end }}{{ if .WSL }} (WSL){{ end }} ",
           "foreground": "#d2f2d7",
-          "background": "#546e7a",
-          "type": "os",
-          "style": "plain"
+          "background": "#546e7a"
         },
         {
-          "foreground": "#193549",
-          "templates_logic": "join",
-          "powerline_symbol": "<#14b0c5,background></>",
-          "background": "#18a81d",
           "type": "battery",
           "style": "powerline",
+          "templates_logic": "join",
+          "foreground": "#193549",
+          "powerline_symbol": "<#14b0c5,background></>",
+          "background": "#18a81d",
           "background_templates": [
             "{{if le .Percentage 10 }}#ff2819{{ else if le .Percentage 25 }}#fd8c30{{ else if le .Percentage 50 }}#e6e604{{ else if le .Percentage 75 }}#91cb0a{{end}}"
           ],
           "templates": [
-            "{{if le .Percentage 10 }} {{else if le .Percentage 25 }} {{ else if le .Percentage 50 }} {{ else if le .Percentage 75 }} {{ else }} {{end}} ",
+            "{{ if le .Percentage 10 }} {{else if le .Percentage 25 }} {{ else if le .Percentage 50 }} {{ else if le .Percentage 75 }} {{ else }} {{end}} ",
             "{{ if eq \"Charging\" .State.String }}󱐋 {{end}}",
             "{{ if not .Error }}{{ .Percentage }} {{ end }}"
           ],
@@ -64,13 +66,15 @@
             "hide_root_location": true,
             "mapped_locations": {
               "/mnt/c": "C:/",
+              "re:(/.*/github/(?P<repo>.*)\\.worktrees)": "/${repo}",
               "re:(.*/github)": ""
             },
+            "mapped_locations_regex_expand": true,
             "max_depth": 4,
             "style": "agnoster_short"
           },
           "cache": {
-            "duration": "1h",
+            "duration": "10s",
             "strategy": "folder"
           },
           "template": " {{ .Path }} ",
@@ -82,13 +86,8 @@
         },
         {
           "options": {
-            "fetch_status": true,
-            "fetch_upstream_icon": true,
             "status_formats": {
               "Modified": " ±%d"
-            },
-            "untracked_modes": {
-              "/Users/user/Projects/oh-my-posh/": "no"
             }
           },
           "cache": {

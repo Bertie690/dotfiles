@@ -2,4 +2,8 @@
 
 # Custom PATH extensions!
 
-export PATH="$HOME/bin:$HOME/.local/bin:$GOROOT/bin:$GOPATH/bin:$VOLTA_HOME/bin:$PNPM_HOME:$PATH"
+PATH="$HOME/bin:$HOME/.local/bin:$VOLTA_HOME/bin:$PNPM_HOME:$PATH"
+if command -v go >/dev/null 2>&1; then
+    PATH="$(go env GOPATH)/bin:$PATH"
+fi
+export PATH

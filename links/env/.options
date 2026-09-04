@@ -13,3 +13,7 @@ shopt -s checkwinsize
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
 shopt -s globstar
+# If set, bash will allow patterns which match no files to expand to a null string,
+# rather than themselves. This option is enabled by default when the shell is
+# started in POSIX mode.
+shopt -s nullglob
