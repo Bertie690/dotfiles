@@ -2,7 +2,11 @@
 
 # Config file for boostrap script.
 
-config_dir="$(systemd-path user-configuration)"
+if command -v systemd-path >/dev/null 2>&1; then
+    config_dir="$(systemd-path user-configuration)"
+else
+    config_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
+fi
 
 # Associative array containing globs linking source folders to their corresponding target folders.
 # All source paths will be interpreted relative to $DOTFILES_ROOT, and all destination paths
@@ -33,4 +37,4 @@ declare -a sources_order
 # shellcheck disable=SC2034
 # (we use this in bootstrap.sh)
 readarray -t sources_order <<< "$(printf "%s\n" "${!sources_to_targets[@]}" | \
-    sort --stable --reverse)"
+    LC_ALL=C sort --stable --reverse)"

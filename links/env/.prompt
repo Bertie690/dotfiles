@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 # skip if non login shell
-if [[ $- != *i* ]] then return 0 2>/dev/null || exit 0; fi
+if [[ $- != *i* ]]; then return 0 2>/dev/null; fi
 
 # Prompt and shell integration setup
 

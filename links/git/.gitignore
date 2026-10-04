@@ -1,2 +1,4 @@
 node_modules
 **/lefthook-local.yml
+
+**/.claude/.cc-writes/

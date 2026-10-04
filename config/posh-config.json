@@ -66,8 +66,9 @@
             "hide_root_location": true,
             "mapped_locations": {
               "/mnt/c": "C:/",
-              "re:(/.*/github/(?P<repo>.*)\\.worktrees)": "/${repo}",
-              "re:(.*/github)": ""
+              "re:(.*/github/(?P<repo>[^/.]+)(?:\\.worktrees/[^/]+)?)": "/${repo}",
+              "re:(.*/github)": "",
+              "re:(.*/faire/(?P<repo>[^/.]+)(?:\\.worktrees/[^/]+)?)": "${repo}"
             },
             "mapped_locations_regex_expand": true,
             "max_depth": 4,
@@ -88,6 +89,9 @@
           "options": {
             "status_formats": {
               "Modified": " ±%d"
+            },
+            "mapped_branches": {
+              "matthew-taylor/*": ""
             }
           },
           "cache": {

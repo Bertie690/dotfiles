@@ -1,7 +1,13 @@
 #! /usr/bin/env bash
 
+if command -v systemd-path >/dev/null 2>&1; then
+    config_dir="$(systemd-path user-configuration)"
+else
+    config_dir="${XDG_CONFIG_HOME:-$HOME/.config}"
+fi
+
 # Initialize prompts/aliases file if exist
-for file in "$(systemd-path user-configuration)"/env/{.prompt,.aliases}; do
+for file in "$config_dir"/env/{.prompt,.aliases}; do
    if [[ -r "$file" && -f "$file" ]]; then
        source "$file"
    else
@@ -11,8 +17,8 @@ done
 
 # Load local (untracked) customizations if present
 # We load it here to allow setting custom aliases (which doesn't play nice in vscode)
-if [[ -r "$(systemd-path user-configuration)"/env/.local && -f "$(systemd-path user-configuration)"/env/.local ]]; then
-    source "$(systemd-path user-configuration)"/env/.local || echo "Error launching local configs!" >&2
+if [[ -r "$config_dir"/env/.local && -f "$config_dir"/env/.local ]]; then
+    source "$config_dir"/env/.local || echo "Error launching local configs!" >&2
 fi
 
 

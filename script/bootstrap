@@ -94,8 +94,7 @@ link_files () {
 
     # Check if the destination already exists, linking the file immediately if not found.
     if [[ ! -f "$dst" && ! -d "$dst" && ! -L "$dst" ]]; then
-	echo $dst
-	mkdir -p "$(dirname "$dst")"
+        mkdir -p "$(dirname "$dst")"
         ln -s "$src" "$dst"
         success "Symlinked $(orange "$src") to $(blue "$dst")!"
         return;
@@ -107,7 +106,7 @@ link_files () {
     fi
 
     # Finally, make the link as applicable.
-    action=${action:-globalAction}
+    action=${action:-$globalAction}
     do_action
 }
 
